@@ -1,0 +1,33 @@
+name: pam-2026-p7-ifs23003
+
+on:
+  push:
+    branches: [ main ] # Pastikan ini sesuai nama branch Anda (main atau master)
+
+permissions:
+  contents: write # Menambah izin tulis langsung di dalam script
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # Update ke v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version-file: pubspec.yaml # Menggunakan versi flutter yang sesuai project
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build Web
+        # Pastikan nama repo 'pam_p6_2026_ifs23003' sudah benar
+        run: flutter build web --release --base-href /pam_p6_2026_ifs23003/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4 # Update ke v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
